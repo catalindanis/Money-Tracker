@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   tabBarItemStyle: {
     justifyContent: "center",
-    backgroundColor: Colors.lightgray,
+    backgroundColor: "gray",
   },
   tabBarLabelStyle: {
     color: "black",
