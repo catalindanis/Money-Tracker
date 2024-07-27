@@ -25,6 +25,11 @@ export default function LoginScreen() {
 
   const [hidePassword, setHidePassword] = useState(true);
 
+  const [emailField, setEmailField] = useState("");
+  const [passwordField, setPasswordField] = useState("");
+
+  const [submitButton, setSubmitButton] = useState(false);
+
   return (
     <View
       style={{
@@ -49,21 +54,27 @@ export default function LoginScreen() {
       <View style={styles.field}>
         <Text style={styles.fieldTitle}>Email</Text>
         <View>
-          <FontAwesome
+        <View
             style={{
+              height: 50,
+              width: 40,
               position: "absolute",
               zIndex: 1,
-              top: 14,
-              left: 10,
+              left: -1,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            size={20}
-            name="envelope"
-          />
+          >
+            <FontAwesome size={22} name="envelope" />
+          </View>
           <TextInput
             style={styles.textInput}
             autoComplete="email"
             placeholder="Type your email"
             placeholderTextColor={Colors.gray}
+            onChangeText={(text) => {
+              setEmailField(text);
+            }}
           ></TextInput>
         </View>
       </View>
@@ -71,22 +82,28 @@ export default function LoginScreen() {
       <View style={styles.field}>
         <Text style={styles.fieldTitle}>Password</Text>
         <View>
-          <FontAwesome
+          <View
             style={{
+              height: 50,
+              width: 40,
               position: "absolute",
               zIndex: 1,
-              top: 12,
-              left: 11,
+              left: 0,
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            size={27}
-            name="lock"
-          />
+          >
+            <FontAwesome size={27} name="lock" />
+          </View>
           <TextInput
             style={styles.textInput}
             autoComplete="current-password"
             secureTextEntry={hidePassword}
             placeholder="Type your password"
             placeholderTextColor={Colors.gray}
+            onChangeText={(text) => {
+              setPasswordField(text);
+            }}
           ></TextInput>
           <View
             style={{
@@ -135,7 +152,7 @@ export default function LoginScreen() {
         </Pressable>
       </View>
 
-      <View style={styles.submit}>
+      <View style={submitButton ? styles.submitFocus : styles.submit}>
         <Pressable
           style={{
             width: 250,
@@ -143,6 +160,13 @@ export default function LoginScreen() {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onPressIn={() => {
+            setSubmitButton(true);
+            setTimeout(() => {
+              setSubmitButton(false);
+            }, 150);
+          }}
+          onPress={() => {}}
         >
           <Text style={{ fontFamily: "MontserratBold", fontSize: 20 }}>
             Sign in
@@ -180,6 +204,13 @@ const styles = StyleSheet.create({
     width: 250,
     borderRadius: 10,
     backgroundColor: Colors.yellow,
+    margin: 10,
+  },
+  submitFocus: {
+    height: 70,
+    width: 250,
+    borderRadius: 10,
+    backgroundColor: Colors.darkyellow,
     margin: 10,
   },
 });
