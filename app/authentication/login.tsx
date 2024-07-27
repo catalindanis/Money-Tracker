@@ -1,33 +1,153 @@
-import { Button, Image, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Link } from "expo-router";
 import Colors from "@/constants/Colors";
-import { TextInput } from "react-native-gesture-handler";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { useState } from "react";
+import { useFonts } from "expo-font";
 
 export default function LoginScreen() {
+  let [fontsLoaded] = useFonts({
+    MontserratLight: require("../../assets/fonts/Montserrat-Light.ttf"),
+    Montserrat: require("../../assets/fonts/Montserrat-Regular.ttf"),
+    MontserratSemiBold: require("../../assets/fonts/Montserrat-SemiBold.ttf"),
+    MontserratBold: require("../../assets/fonts/Montserrat-Bold.ttf"),
+  });
+
+  const [hidePassword, setHidePassword] = useState(true);
+
   return (
     <View
       style={{
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Colors.darkblue,
+        backgroundColor: "white",
+        paddingTop: 50,
       }}
     >
-      <View>
-        <Image
-          source={require("../../assets/images/wallet.png")}
-          style={styles.icon}
-        />
+      <View style={{ marginBottom: 20 }}>
+        <Text
+          style={{
+            fontFamily: "Montserrat",
+            fontSize: 25,
+          }}
+        >
+          Already have an account?
+        </Text>
       </View>
 
       <View style={styles.field}>
         <Text style={styles.fieldTitle}>Email</Text>
-        <TextInput style={styles.textInput}></TextInput>
+        <View>
+          <FontAwesome
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              top: 14,
+              left: 10,
+            }}
+            size={20}
+            name="envelope"
+          />
+          <TextInput
+            style={styles.textInput}
+            autoComplete="email"
+            placeholder="Type your email"
+            placeholderTextColor={Colors.gray}
+          ></TextInput>
+        </View>
       </View>
 
       <View style={styles.field}>
         <Text style={styles.fieldTitle}>Password</Text>
-        <TextInput style={styles.textInput}></TextInput>
+        <View>
+          <FontAwesome
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              top: 12,
+              left: 11,
+            }}
+            size={27}
+            name="lock"
+          />
+          <TextInput
+            style={styles.textInput}
+            autoComplete="current-password"
+            secureTextEntry={hidePassword}
+            placeholder="Type your password"
+            placeholderTextColor={Colors.gray}
+          ></TextInput>
+          <View
+            style={{
+              height: 50,
+              width: 40,
+              position: "absolute",
+              zIndex: 1,
+              right: 6,
+            }}
+          >
+            <Pressable
+              onPress={() => {
+                setHidePassword(!hidePassword);
+              }}
+              style={{
+                height: 50,
+                width: 40,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <FontAwesome
+                size={27}
+                name={!hidePassword ? "eye-slash" : "eye"}
+              />
+            </Pressable>
+          </View>
+        </View>
+      </View>
+
+      <View style={{ width: 350 }}>
+        <Pressable
+          style={{
+            justifyContent: "flex-end",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Montserrat",
+              fontSize: 15,
+              color: Colors.red,
+            }}
+          >
+            Forgot your password?
+          </Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.submit}>
+        <Pressable
+          style={{
+            width: 250,
+            height: 70,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ fontFamily: "MontserratBold", fontSize: 20 }}>
+            Sign in
+          </Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -43,16 +163,23 @@ const styles = StyleSheet.create({
   },
   fieldTitle: {
     fontSize: 25,
-    fontFamily: "Montserrat",
+    fontFamily: "MontserratBold",
   },
   textInput: {
     height: 50,
     width: 350,
-    borderWidth: 1,
-    borderRadius: 5,
-    fontSize: 25,
-    padding: 3,
-    fontFamily: "NunitoSans",
+    borderRadius: 10,
+    fontSize: 20,
+    paddingLeft: 35,
+    paddingRight: 40,
+    fontFamily: "MontserratSemiBold",
     backgroundColor: Colors.lightgray,
+  },
+  submit: {
+    height: 70,
+    width: 250,
+    borderRadius: 10,
+    backgroundColor: Colors.yellow,
+    margin: 10,
   },
 });

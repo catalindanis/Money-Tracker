@@ -24,14 +24,12 @@ const Colors = {
     tabIconSelected: tintColorDark,
   },
 
-  darkblue: '#23273c',
-  lightblue: '#3ec3d5',
-  lightred: '#ff545f',
-  lightgreen: '#41dc65',
-  lightgray: '#c8c7cd',
-  verylightgray: '#e1e0e6',
-  smokewhite: '#f7f7fa',
-  white: '#ffffff'
+  blue: "#2b3d4f",
+  lightblue: "#354a5f",
+  gray: "#5d6d7e",
+  lightgray: "#95a6a7",
+  yellow: "#f1c40e",
+  red: "#D61A3C"
 };
 
 export default Colors;

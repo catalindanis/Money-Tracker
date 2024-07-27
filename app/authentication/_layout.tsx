@@ -1,22 +1,26 @@
 import { Tabs } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function AuthenticationLayout() {
   const [loginFocused, setLoginFocused] = useState(true);
 
   return (
-    <Tabs>
+    <Tabs screenOptions={{tabBarHideOnKeyboard: true,}}>
       <Tabs.Screen
         name="login"
         options={{
+          
           headerShown: false,
           tabBarStyle: styles.tabBarStyle,
-          tabBarItemStyle: loginFocused ? styles.tabBarItemStyleFocused : styles.tabBarItemStyle,
+          tabBarItemStyle: loginFocused
+            ? styles.tabBarItemStyleFocused
+            : styles.tabBarItemStyle,
           tabBarLabelStyle: styles.tabBarLabelStyle,
-          tabBarIconStyle: styles.tabBarIconStyle,
-          title: "Login"
+          tabBarIcon: () => <FontAwesome size={35} name="user" />,
+          title: "Login",
         }}
         listeners={{
           tabPress: () => {
@@ -29,10 +33,13 @@ export default function AuthenticationLayout() {
         options={{
           headerShown: false,
           tabBarStyle: styles.tabBarStyle,
-          tabBarItemStyle: !loginFocused ? styles.tabBarItemStyleFocused : styles.tabBarItemStyle,
+          tabBarItemStyle: !loginFocused
+            ? styles.tabBarItemStyleFocused
+            : styles.tabBarItemStyle,
           tabBarLabelStyle: styles.tabBarLabelStyle,
+          tabBarIcon: () => <FontAwesome size={33} name="user-plus" />,
           tabBarIconStyle: styles.tabBarIconStyle,
-          title: "Register"
+          title: "Register",
         }}
         listeners={{
           tabPress: () => {
@@ -46,24 +53,24 @@ export default function AuthenticationLayout() {
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    backgroundColor: Colors.smokewhite,
-    height: 100,
+    height: 80,
     borderTopWidth: 0,
   },
   tabBarItemStyleFocused: {
     justifyContent: "center",
-    backgroundColor: Colors.lightblue,
+    backgroundColor: Colors.gray,
   },
   tabBarItemStyle: {
     justifyContent: "center",
-    backgroundColor: "gray",
+    backgroundColor: Colors.lightgray,
   },
   tabBarLabelStyle: {
     color: "black",
     fontFamily: "Montserrat",
     fontSize: 25,
+    display: "none",
   },
   tabBarIconStyle: {
-    display: "none",
+    backgroundColor: "black",
   },
 });

@@ -18,7 +18,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/wallet.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "windowSoftInputMode": "adjustResize"
       }
     },
     "web": {
