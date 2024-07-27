@@ -1,18 +1,23 @@
 import { Tabs } from "expo-router";
-import { Animated, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Colors from "../../constants/Colors";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+  Easing,
+} from "react-native-reanimated";
 
 export default function AuthenticationLayout() {
   const [loginFocused, setLoginFocused] = useState(true);
 
   return (
-    <Tabs screenOptions={{tabBarHideOnKeyboard: true,}}>
+    <Tabs screenOptions={{ tabBarHideOnKeyboard: true }}>
       <Tabs.Screen
         name="login"
         options={{
-          
           headerShown: false,
           tabBarStyle: styles.tabBarStyle,
           tabBarItemStyle: loginFocused
@@ -21,6 +26,7 @@ export default function AuthenticationLayout() {
           tabBarLabelStyle: styles.tabBarLabelStyle,
           tabBarIcon: () => <FontAwesome size={35} name="user" />,
           title: "Login",
+          
         }}
         listeners={{
           tabPress: () => {
@@ -28,6 +34,7 @@ export default function AuthenticationLayout() {
           },
         }}
       />
+
       <Tabs.Screen
         name="register"
         options={{
@@ -74,3 +81,5 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 });
+
+

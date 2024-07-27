@@ -7,6 +7,7 @@ import {
   View,
   TextInput,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
 } from "react-native";
 import { Link } from "expo-router";
@@ -14,6 +15,7 @@ import Colors from "@/constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
 import { useFonts } from "expo-font";
+import loginErrorMessage from "../messages/login"
 
 export default function LoginScreen() {
   let [fontsLoaded] = useFonts({
@@ -29,6 +31,8 @@ export default function LoginScreen() {
   const [passwordField, setPasswordField] = useState("");
 
   const [submitButton, setSubmitButton] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState(" ");
 
   return (
     <View
@@ -166,15 +170,41 @@ export default function LoginScreen() {
               setSubmitButton(false);
             }, 150);
           }}
-          onPress={() => {}}
+          onPress={() => {
+            Keyboard.dismiss();
+            if(!checkIfValid(emailField, passwordField, setErrorMessage))
+              return;
+          }}
         >
           <Text style={{ fontFamily: "MontserratBold", fontSize: 20 }}>
             Sign in
           </Text>
         </Pressable>
       </View>
+
+      <Text style={{color: Colors.darkred, fontFamily: "MontserratSemiBold"}}>{errorMessage}</Text>
     </View>
   );
+}
+
+function checkIfValid(email, password, setErrorMessage){
+  if(email === "" || password === ""){
+    setErrorMessage(loginErrorMessage.fieldEmpty);
+    return false;
+  }
+
+  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  
+  if (reg.test(email) === false){
+    setErrorMessage(loginErrorMessage.emailInvalidFormat);
+    return false;
+  }
+  
+  //TODO connection with database and check credentials
+  setErrorMessage(loginErrorMessage.accountNotFound);
+  return false;
+
+  return true;
 }
 
 const styles = StyleSheet.create({

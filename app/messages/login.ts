@@ -1,7 +1,7 @@
 const loginMessage = {
     fieldEmpty: "Please fill your fields!",
     emailInvalidFormat: "Please enter a valid email!",
-    accountNotFound: "Account not found! Please check your credentials!",
+    accountNotFound: "Account doesn't exist!",
 }
 
 export default loginMessage;
