@@ -10,7 +10,7 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import Colors from "@/constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
@@ -271,8 +271,9 @@ function checkIfValid(auth, email, password, setMessage, setMessageColor) {
         setMessageColor(0);
         return false;
       }
-      setMessage(loginMessage.loginSucces);
-      setMessageColor(1);
+      // setMessage(loginMessage.loginSucces);
+      // setMessageColor(1);
+      router.replace("../home/home");
     })
     .catch((error) => {
       setMessage(loginMessage.accountNotFound);
