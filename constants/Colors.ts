@@ -32,7 +32,8 @@ const Colors = {
   darkred: "#D61A3C",
   lightred: "#D95D39",
   darkyellow: "#d3ad15",
-  red: "#c34f2d"
+  red: "#c34f2d",
+  green: '#48A14D'
 };
 
 export default Colors;

@@ -16,9 +16,8 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
 import { useFonts } from "expo-font";
 import loginMessage from "../messages/login";
-import { initializeApp } from "firebase/app";
+import authenticationDB from "../database/authentication";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from "firebase/auth";
@@ -39,19 +38,7 @@ export default function LoginScreen() {
   const [submitButton, setSubmitButton] = useState(false);
 
   const [message, setMessage] = useState(" ");
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyA6U8uifo6W_9lDeq2XuHCbvEaHexGQdXw",
-    authDomain: "moneytracker-7950c.firebaseapp.com",
-    projectId: "moneytracker-7950c",
-    storageBucket: "moneytracker-7950c.appspot.com",
-    messagingSenderId: "26470506488",
-    appId: "1:26470506488:web:e7cb8e881bf03f4306c00d",
-  };
-
-  const app = initializeApp(firebaseConfig);
-
-  const auth = getAuth();
+  const [messageColor, setMessageColor] = useState(0);
 
   return (
     <View
@@ -163,7 +150,15 @@ export default function LoginScreen() {
             justifyContent: "flex-end",
           }}
           onPress={() => {
-            if (!checkForgotPassword(auth, emailField, setMessage)) return;
+            if (
+              !checkForgotPassword(
+                authenticationDB.auth,
+                emailField,
+                setMessage,
+                setMessageColor
+              )
+            )
+              return;
           }}
         >
           <Text
@@ -194,9 +189,16 @@ export default function LoginScreen() {
           }}
           onPress={() => {
             Keyboard.dismiss();
-            if (!checkIfValid(auth, emailField, passwordField, setMessage))
+            if (
+              !checkIfValid(
+                authenticationDB.auth,
+                emailField,
+                passwordField,
+                setMessage,
+                setMessageColor
+              )
+            )
               return;
-            
           }}
         >
           <Text style={{ fontFamily: "MontserratBold", fontSize: 20 }}>
@@ -207,7 +209,7 @@ export default function LoginScreen() {
 
       <Text
         style={{
-          color: Colors.darkred,
+          color: messageColor == 0 ? Colors.darkred : Colors.green,
           fontFamily: "MontserratSemiBold",
           textAlign: "center",
           marginLeft: 10,
@@ -220,9 +222,10 @@ export default function LoginScreen() {
   );
 }
 
-function checkForgotPassword(auth, email, setMessage) {
+function checkForgotPassword(auth, email, setMessage, setMessageColor) {
   if (email === "") {
     setMessage(loginMessage.resetPasswordEmailEmpty);
+    setMessageColor(0);
     return false;
   }
 
@@ -230,21 +233,25 @@ function checkForgotPassword(auth, email, setMessage) {
 
   if (reg.test(email) === false) {
     setMessage(loginMessage.emailInvalidFormat);
+    setMessageColor(0);
     return false;
   }
 
   sendPasswordResetEmail(auth, email)
     .then(() => {
       setMessage(loginMessage.resetPasswordSuccess);
+      setMessageColor(1);
     })
     .catch((error) => {
       setMessage(loginMessage.unknownError);
+      setMessageColor(0);
     });
 }
 
-function checkIfValid(auth, email, password, setMessage) {
+function checkIfValid(auth, email, password, setMessage, setMessageColor) {
   if (email === "" || password === "") {
     setMessage(loginMessage.fieldEmpty);
+    setMessageColor(0);
     return false;
   }
 
@@ -252,20 +259,24 @@ function checkIfValid(auth, email, password, setMessage) {
 
   if (reg.test(email) === false) {
     setMessage(loginMessage.emailInvalidFormat);
+    setMessageColor(0);
     return false;
   }
 
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       //TODO after sign in screen
-      if(!userCredential.user.emailVerified){
+      if (!userCredential.user.emailVerified) {
         setMessage(loginMessage.emailNotVerified);
+        setMessageColor(0);
         return false;
       }
       setMessage(loginMessage.loginSucces);
+      setMessageColor(1);
     })
     .catch((error) => {
       setMessage(loginMessage.accountNotFound);
+      setMessageColor(0);
       return false;
     });
 
