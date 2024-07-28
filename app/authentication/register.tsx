@@ -15,7 +15,13 @@ import Colors from "@/constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useState } from "react";
 import { useFonts } from "expo-font";
-import registerErrorMessage from "../messages/register"
+import registerMessage from "../messages/register";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 export default function RegisterScreen() {
   let [fontsLoaded] = useFonts({
@@ -27,14 +33,15 @@ export default function RegisterScreen() {
 
   const [hidePassword, setHidePassword] = useState(true);
 
-  const [usernameField, setusernameField] = useState("");
   const [emailField, setEmailField] = useState("");
   const [passwordField, setPasswordField] = useState("");
   const [confirmPasswordField, setConfirmPasswordField] = useState("");
 
   const [submitButton, setSubmitButton] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState(" ");
+  const [message, setMessage] = useState(" ");
+
+  const auth = getAuth();
 
   return (
     <View
@@ -55,34 +62,6 @@ export default function RegisterScreen() {
         >
           Create a new account
         </Text>
-      </View>
-
-      <View style={styles.field}>
-        <Text style={styles.fieldTitle}>Username</Text>
-        <View>
-          <View
-            style={{
-              height: 50,
-              width: 40,
-              position: "absolute",
-              zIndex: 1,
-              left: -1,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <FontAwesome size={21} name="address-card" />
-          </View>
-          <TextInput
-            style={styles.textInput}
-            autoComplete="username"
-            placeholder="Type your username"
-            placeholderTextColor={Colors.gray}
-            onChangeText={(text) => {
-              setusernameField(text);
-            }}
-          ></TextInput>
-        </View>
       </View>
 
       <View style={styles.field}>
@@ -238,7 +217,15 @@ export default function RegisterScreen() {
           }}
           onPress={() => {
             Keyboard.dismiss();
-            if(!checkIfValid(usernameField, emailField, passwordField, confirmPasswordField, setErrorMessage))
+            if (
+              !checkIfValid(
+                auth,
+                emailField,
+                passwordField,
+                confirmPasswordField,
+                setMessage
+              )
+            )
               return;
           }}
         >
@@ -248,38 +235,56 @@ export default function RegisterScreen() {
         </Pressable>
       </View>
 
-      <Text style={{color: Colors.darkred, fontFamily: "MontserratSemiBold", textAlign: "center", marginLeft: 10, marginRight: 10,}}>{errorMessage}</Text>
+      <Text
+        style={{
+          color: Colors.darkred,
+          fontFamily: "MontserratSemiBold",
+          textAlign: "center",
+          marginLeft: 10,
+          marginRight: 10,
+        }}
+      >
+        {message}
+      </Text>
     </View>
   );
 }
 
-function checkIfValid(username, email, password, confirmPassword, setErrorMessage){
-  if(username === "" || email === "" || password === "" || confirmPassword === ""){
-    setErrorMessage(registerErrorMessage.fieldEmpty);
+function checkIfValid(auth, email, password, confirmPassword, setMessage) {
+  if (email === "" || password === "" || confirmPassword === "") {
+    setMessage(setMessage.fieldEmpty);
     return false;
   }
 
   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-  
-  if (reg.test(email) === false){
-    setErrorMessage(registerErrorMessage.emailInvalidFormat);
+
+  if (reg.test(email) === false) {
+    setMessage(setMessage.emailInvalidFormat);
     return false;
   }
 
-  if(password !== confirmPassword){
-    setErrorMessage(registerErrorMessage.passwordsNotMatch);
+  if (password !== confirmPassword) {
+    setMessage(setMessage.passwordsNotMatch);
     return false;
   }
 
   reg = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
-  if(reg.test(password) === false){
-    setErrorMessage(registerErrorMessage.passwordSecurityLevel);
+  if (reg.test(password) === false) {
+    setMessage(setMessage.passwordSecurityLevel);
     return false;
   }
-  
-  //TODO connection with database and push credentials
-  return false;
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      sendEmailVerification(auth.currentUser).then(() => {
+        setMessage(registerMessage.createAccountSuccess);
+      });
+    })
+    .catch((error) => {
+      setMessage(setMessage.accountWithThisEmailAlreadyExists);
+      return false;
+    });
 
   return true;
 }
