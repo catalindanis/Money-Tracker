@@ -3,6 +3,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  browserLocalPersistence,
 } from "firebase/auth";
 
 const firebaseConfig = {
